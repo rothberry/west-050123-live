@@ -13,11 +13,17 @@ import React from "react"
 */
 
 const ProjectListItem = (props) => {
+	// console.log(props)
 	return (
 		<div>
-			<h1>NAME</h1>
-			<p>ABOUT</p>
-			<img src="IMAGE" width="100" height="100" />
+			<h1>{props.project.name}</h1>
+			<p>{props.project.about}</p>
+			<img
+				src={props.project.image}
+				alt={props.project.name}
+				width="500"
+				height="300"
+			/>
 		</div>
 	)
 }
