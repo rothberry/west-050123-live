@@ -1,26 +1,40 @@
-const ProjectListItem = ({ id, about, image, link, name, phase }) => {
-  return (
-    <li className="card">
-      <figure className="image">
-        <img src={image} alt={name} />
-        <button className="claps">👏{0}</button>
-      </figure>
+import { useState } from "react"
 
-      <section className="details">
-        <h4>{name}</h4>
-        <p>{about}</p>
-        {link ? (
-          <p>
-            <a href={link}>Link</a>
-          </p>
-        ) : null}
-      </section>
+const ProjectListItem = (props) => {
+	const [clapCount, setClapCount] = useState(0)
+	// const clapCount = 0
 
-      <footer className="extra">
-        <span className="badge blue">Phase {phase}</span>
-      </footer>
-    </li>
-  );
-};
+	const handleClaps = (e) => {
+		// when this button is clicked, increase the clapCount by 1
+		// setClapCount(clapCount + 1)
+		setClapCount((prevState) => prevState + 1)
+	}
 
-export default ProjectListItem;
+	return (
+		<li className="card">
+			<figure className="image">
+				<img src={props.project.image} alt={props.project.name} />
+				{/* <button className="claps" onClick={() => setClapCount(clapCount + 1)}> */}
+				<button className="claps" onClick={handleClaps}>
+					👏{clapCount}
+				</button>
+			</figure>
+
+			<section className="details">
+				<h4>{props.project.name}</h4>
+				<p>{props.project.about}</p>
+				{props.project.link ? (
+					<p>
+						<a href={props.project.link}>Link</a>
+					</p>
+				) : null}
+			</section>
+
+			<footer className="extra">
+				<span className="badge blue">Phase {props.project.phase}</span>
+			</footer>
+		</li>
+	)
+}
+
+export default ProjectListItem
