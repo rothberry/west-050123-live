@@ -1,26 +1,58 @@
-import { useState } from "react";
+import { useState } from "react"
 
-import Header from "./components/Header";
-import ProjectForm from "./components/ProjectForm";
-import ProjectList from "./components/ProjectList";
+import Header from "./components/Header"
+import ProjectContainer from "./components/ProjectContainer"
+import ProjectForm from "./components/ProjectForm"
+import ProjectList from "./components/ProjectList"
+import SearchInput from "./components/SearchInput"
+import PhaseFilters from "./components/PhaseFilters"
+
+/* 
+  1. What's the difference between State and Props?
+  - State Dynamic / Props Static*
+    - props are immutatable
+    - Change in State triggers re-render of the comp tree
+  2.  How do we change State?
+    // - state = newState?
+    setState(newState)  OR setState(prevState => newState)
+
+  3. If our state is going to be an array, what should the datatype of the inital state be?
+  - an array
+    - Can be `null`, be it more benefical to keep the datatypes consistent
+
+*/
 
 const App = () => {
-  const [projects, setProjects] = useState([]);
+	// const [projects, setProjects] = useState([])
+	const [isDarkMode, setIsDarkMode] = useState(true)
+	// const [searchQuery, setSearchQuery] = useState("")
 
-  const handleClick = () => {
-    fetch("http://localhost:4000/projects")
-      .then((res) => res.json())
-      .then((projects) => setProjects(projects));
-  };
+	// const handleClick = () => {
+	// 	fetch("http://localhost:4000/projects")
+	// 		.then((res) => res.json())
+	// 		.then((projects) => setProjects(projects))
+	// }
 
-  return (
-    <div className="App">
-      <Header />
-      <ProjectForm />
-      <button onClick={handleClick}>Load Projects</button>
-      <ProjectList projects={projects} />
-    </div>
-  );
-};
+	// const searchResults = projects.filter((project) => {
+	// 	return project.name.toLowerCase().includes(searchQuery.toLowerCase())
+	// })
 
-export default App;
+	const dark = isDarkMode ? "App" : "App light"
+
+	return (
+		<div className={dark}>
+			<Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+			{/* <ProjectForm /> */}
+			{/* <button onClick={handleClick}>Load Projects</button> */}
+      <ProjectContainer />
+			{/* <section>
+				<h2>Projects</h2>
+				<PhaseFilters />
+				<SearchInput setSearchQuery={setSearchQuery} />
+				<ProjectList projects={searchResults} />
+			</section> */}
+		</div>
+	)
+}
+
+export default App
