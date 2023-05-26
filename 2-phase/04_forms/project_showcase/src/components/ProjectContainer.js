@@ -3,8 +3,7 @@ import PhaseFilters from "./PhaseFilters"
 import SearchInput from "./SearchInput"
 import ProjectList from "./ProjectList"
 
-const ProjectContainer = () => {
-	const [projects, setProjects] = useState([])
+const ProjectContainer = ({ projects, setProjects }) => {
 	const [searchQuery, setSearchQuery] = useState("")
 	const [phase, setPhase] = useState(0)
 
