@@ -3,7 +3,7 @@ import PhaseFilters from "./PhaseFilters"
 import SearchInput from "./SearchInput"
 import ProjectList from "./ProjectList"
 
-const ProjectContainer = ({ projects }) => {
+const ProjectContainer = ({ projects, onUpdateProjects, onDeleteProject }) => {
 	const [searchQuery, setSearchQuery] = useState("")
 	const [phase, setPhase] = useState(0)
 
@@ -27,7 +27,11 @@ const ProjectContainer = ({ projects }) => {
 			<h2>Projects</h2>
 			<PhaseFilters setPhase={setPhase} />
 			<SearchInput setSearchQuery={setSearchQuery} />
-			<ProjectList projects={searchResults} />
+			<ProjectList
+				projects={searchResults}
+				onUpdateProjects={onUpdateProjects}
+				onDeleteProject={onDeleteProject}
+			/>
 		</section>
 	)
 }
