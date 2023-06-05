@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
 
-const Home = (props) => {
+const Home = () => {
 	const [recentProjects, setRecentProjects] = useState([])
 
 	useEffect(() => {
-		console.log(props)
 		// fetch the 3 most recently added projects from json-server
 		fetch("http://localhost:4000/projects?_sort=id&_order=desc&_limit=3")
 			.then((r) => r.json())

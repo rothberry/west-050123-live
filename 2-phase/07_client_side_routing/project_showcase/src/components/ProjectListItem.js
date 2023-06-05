@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom/cjs/react-router-dom.min"
 
 const ProjectListItem = ({
 	id,
@@ -55,6 +56,9 @@ const ProjectListItem = ({
 			</section>
 
 			<footer className="extra">
+				<button>
+					<Link to={`/projects/${id}`}>Details</Link>
+				</button>
 				<span className="badge blue">Phase {phase}</span>
 				<span className="badge">
 					<button onClick={handleDelete}>DELETE</button>

@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 
 const ProjectDetail = () => {
 	const [claps, setClaps] = useState(0)
-	const [project, setProject] = useState(null)
+	const [project, setProject] = useState({})
 
-	const id = 1
+	// const id = 1
+	// useParams() => datatype is on Object!
+	const params = useParams()
+	useEffect(() => {
+		console.log(params)
+	}, [params])
 
 	useEffect(() => {
-		fetch(`http://localhost:4000/projects/${id}`)
+		fetch(`http://localhost:4000/projects/${params.id}`)
 			.then((r) => r.json())
 			.then((project) => {
+				console.log(project)
 				setProject(project)
 			})
-	}, [id])
+	}, [])
 
 	const { image, name, about, link, phase } = project
 
