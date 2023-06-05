@@ -1,95 +1,93 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react"
 
-const ProjectEditForm = ({ onUpdateProject }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    about: "",
-    phase: "",
-    link: "",
-    image: "",
-  });
+const ProjectEditForm = ({ editProject, onUpdateProjects }) => {
+	const { name, about, phase, link, image, id } = editProject
+	const [formData, setFormData] = useState({
+		...editProject,
+		// name: name
+	})
 
-  const { name, about, phase, link, image } = formData;
+	const handleChange = (e) => {
+		setFormData((prevFormData) => {
+			return { ...prevFormData, [e.target.name]: e.target.value }
+		})
+	}
 
-  // const { id } = useParams()
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		const patchReqObj = {
+			method: "PATCH",
+			headers: {
+				"content-type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		}
+		fetch(`http://localhost:4000/projects/${id}`, patchReqObj)
+			.then((res) => res.json())
+			.then((updatedProject) => {
+				onUpdateProjects(updatedProject)
+			})
+	}
 
-  // const history = useHistory()
+	return (
+		<section>
+			<form className="form" autoComplete="off" onSubmit={handleSubmit}>
+				<h3>Edit Project</h3>
 
-  useEffect(() => {
-    fetch(`http://localhost:4000/projects/1`)
-      .then((res) => res.json())
-      .then((project) => setFormData(project));
-  }, []);
+				<label htmlFor="name">Name</label>
+				<input
+					type="text"
+					id="name"
+					name="name"
+					onChange={handleChange}
+					value={formData.name}
+				/>
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+				<label htmlFor="about">About</label>
+				<textarea
+					id="about"
+					name="about"
+					onChange={handleChange}
+					value={formData.about}
+				/>
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const configObj = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(formData),
-    };
+				<label htmlFor="phase">Phase</label>
+				<select
+					name="phase"
+					id="phase"
+					onChange={handleChange}
+					value={formData.phase}
+				>
+					<option value={""}>Select One</option>
+					<option value="1">Phase 1</option>
+					<option value="2">Phase 2</option>
+					<option value="3">Phase 3</option>
+					<option value="4">Phase 4</option>
+					<option value="5">Phase 5</option>
+				</select>
 
-    fetch(`http://localhost:4000/projects/1`, configObj)
-      .then((resp) => resp.json())
-      .then((updatedProj) => {
-        onUpdateProject(updatedProj);
-      });
-  };
+				<label htmlFor="link">Project Homepage</label>
+				<input
+					type="text"
+					id="link"
+					name="link"
+					onChange={handleChange}
+					value={formData.link}
+				/>
 
-  return (
-    <form onSubmit={handleSubmit} className="form" autoComplete="off">
-      <h3>Edit Project</h3>
+				<label htmlFor="image">Screenshot</label>
+				<input
+					type="text"
+					id="image"
+					name="image"
+					onChange={handleChange}
+					value={formData.image}
+				/>
 
-      <label htmlFor="name">Name</label>
-      <input
-        type="text"
-        id="name"
-        name="name"
-        value={name}
-        onChange={handleChange}
-      />
+				<button type="submit">Edit Project</button>
+			</form>
+		</section>
+	)
+}
 
-      <label htmlFor="about">About</label>
-      <textarea id="about" name="about" value={about} onChange={handleChange} />
-
-      <label htmlFor="phase">Phase</label>
-      <select name="phase" id="phase" value={phase} onChange={handleChange}>
-        <option value="1">Phase 1</option>
-        <option value="2">Phase 2</option>
-        <option value="3">Phase 3</option>
-        <option value="4">Phase 4</option>
-        <option value="5">Phase 5</option>
-      </select>
-
-      <label htmlFor="link">Project Homepage</label>
-      <input
-        type="text"
-        id="link"
-        name="link"
-        value={link}
-        onChange={handleChange}
-      />
-
-      <label htmlFor="image">Screenshot</label>
-      <input
-        type="text"
-        id="image"
-        name="image"
-        value={image}
-        onChange={handleChange}
-      />
-
-      <button type="submit">Update Project</button>
-    </form>
-  );
-};
-
-export default ProjectEditForm;
+export default ProjectEditForm

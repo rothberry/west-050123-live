@@ -1,62 +1,67 @@
-import { useState } from "react";
-import { FaPencilAlt, FaTrash } from "react-icons/fa";
+import { useEffect, useState } from "react"
 
 const ProjectListItem = ({
-  project,
-  enterProjectEditModeFor,
-  onDeleteProject,
+	id,
+	about,
+	image,
+	link,
+	name,
+	phase,
+	claps,
+	onUpdateProjects,
+	onDeleteProject,
 }) => {
-  const { id, image, about, name, link, phase } = project;
+	const patchClap = () => {
+		const patchReqObj = {
+			method: "PATCH",
+			headers: {
+				"content-type": "application/json",
+			},
+			body: JSON.stringify({ claps: claps ? claps + 1 : 1 }),
+		}
+		fetch(`http://localhost:4000/projects/${id}`, patchReqObj)
+			.then((res) => res.json())
+			.then((updatedProject) => {
+				onUpdateProjects(updatedProject)
+			})
+	}
 
-  const [clapCount, setClapCount] = useState(0);
+	const handleDelete = (e) => {
+		console.log(id)
+		fetch(`http://localhost:4000/projects/${id}`, {
+			method: "DELETE",
+		}).then(() => {
+			onDeleteProject(id)
+		})
+	}
 
-  const handleClap = (clapCount) => setClapCount(clapCount + 1);
+	return (
+		<li className="card">
+			<figure className="image">
+				<img src={image} alt={name} />
+				<button className="claps" onClick={patchClap}>
+					👏{claps ? claps : 0}
+				</button>
+			</figure>
 
-  const handleEditClick = () => {
-    enterProjectEditModeFor(id);
-  };
+			<section className="details">
+				<h4>{name}</h4>
+				<p>{about}</p>
+				{link ? (
+					<p>
+						<a href={link}>Link</a>
+					</p>
+				) : null}
+			</section>
 
-  const handleDeleteClick = () => {
-    fetch(`http://localhost:4000/projects/${id}`, {
-      method: "DELETE",
-    });
-    onDeleteProject(project)
-      .then((resp) => console.log(resp))
-      .then(onDeleteProject(project));
-  };
+			<footer className="extra">
+				<span className="badge blue">Phase {phase}</span>
+				<span className="badge">
+					<button onClick={handleDelete}>DELETE</button>
+				</span>
+			</footer>
+		</li>
+	)
+}
 
-  return (
-    <li className="card">
-      <figure className="image">
-        <img src={image} alt={name} />
-        <button onClick={handleClap} className="claps">
-          👏{clapCount}
-        </button>
-      </figure>
-
-      <section className="details">
-        <h4>{name}</h4>
-        <p>{about}</p>
-        {link ? (
-          <p>
-            <a href={link}>Link</a>
-          </p>
-        ) : null}
-      </section>
-
-      <footer className="extra">
-        <span className="badge blue">Phase {phase}</span>
-        <div className="manage">
-          <button onClick={handleEditClick}>
-            <FaPencilAlt />
-          </button>
-          <button onClick={handleDeleteClick}>
-            <FaTrash />
-          </button>
-        </div>
-      </footer>
-    </li>
-  );
-};
-
-export default ProjectListItem;
+export default ProjectListItem

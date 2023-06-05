@@ -1,27 +1,22 @@
-import React from "react";
+const Header = ({ isDarkMode, setIsDarkMode }) => {
 
-const Header = ({ isDarkMode, onToggleDarkMode }) => {
-  const buttonTextContent = isDarkMode ? "Light Mode" : "Dark Mode";
+	const handleClick = () => setIsDarkMode(!isDarkMode)
 
-  return (
-    <header>
-      <nav>
-        <h1 className="branding">
-          <span className="logo">{"//"}</span>
-          Project Showcase
-        </h1>
-        <div className="navigation">
-          <a className="button" href="/projects">
-            All Projects
-          </a>
-          <a className="button" href="/projects/new">
-            Add Project
-          </a>
-          <button onClick={onToggleDarkMode}>{buttonTextContent}</button>
-        </div>
-      </nav>
-    </header>
-  );
-};
+	const buttonTextContent = isDarkMode ? "Dark Mode" : "Light Mode"
 
-export default Header;
+	return (
+		<header>
+			<h1>
+				<span className="logo">{"//"}</span>
+				Project Showcase
+			</h1>
+			<div className="navigation">
+				<button>All Projects</button>
+				<button>Add Project</button>
+			</div>
+			<button onClick={handleClick}>{buttonTextContent}</button>
+		</header>
+	)
+}
+
+export default Header
