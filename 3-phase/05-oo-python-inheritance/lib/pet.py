@@ -13,6 +13,47 @@ class Pet:
         self.is_cool = is_cool
         Pet.add_pet(self)
  
+    """ 
+        ! Defining Properties
+        Read and Write Attributes
+
+        Getter and Setter Methods
+        - Getter => method to RETREIVE a given Attr
+        - Setter => Method to overwrite/udpate a given attr
+     
+        Private(ish) Attributes in Python
+        => self._attribute
+        - Private variables are technically NOT private in PYthon, but withthe underscore, it tells the devs that they shouldn't
+    """
+
+    def get_name(self):
+        print("getting name")
+        return self._name
+    
+    def set_name(self, new_name):
+        if (type(new_name) == str) and (len(new_name) > 0):
+            self._name = new_name
+        else:
+            print("BAD STRING BOTY")
+    
+    name = property(get_name, set_name)
+
+    @property
+    def age(self):
+        print("getting age")
+        return self._age
+    
+    @age.setter
+    def age(self, new_age):
+        if (type(new_age) == int) and (new_age > 0):
+            self._age = new_age
+        else:
+            print("BAD AGE BOTY")
+
+
+    def say_hello(self):
+        print("jelllo")
+
     def print_pet_details(self):
         print(f'''
             name:{self.name}
