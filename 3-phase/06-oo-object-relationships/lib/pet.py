@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 import ipdb
+from lib.owner import *
 
 class Pet:
 
     all_pets = []
 
-    def __init__(self,name, age, breed, temperament, is_cool=True):
+    def __init__(self,name, age, breed, temperament, owner, is_cool=True):
         self.name = name
         self.age = age
         self.breed = breed
         self.temperament = temperament
         self.is_cool = is_cool
+        self.owner = owner
         Pet.add_pet(self)
- 
 
     def get_name(self):
-        print("getting name")
         return self._name
     
     def set_name(self, new_name):
@@ -28,7 +28,6 @@ class Pet:
 
     @property
     def age(self):
-        print("getting age")
         return self._age
     
     @age.setter
@@ -38,9 +37,16 @@ class Pet:
         else:
             print("BAD AGE BOTY")
 
-
-    def say_hello(self):
-        print("jelllo")
+    @property
+    def owner(self):
+        return self._owner
+    
+    @owner.setter
+    def owner(self, owner):
+        if type(owner) == Owner:
+            self._owner = owner
+        else:
+            raise AttributeError("namh....")
 
     def print_pet_details(self):
         print(f'''
@@ -50,9 +56,9 @@ class Pet:
             temperament:{self.temperament}
         ''')
 
-    def print_self(self):
-        print(self)
-
+    def __repr__(self):
+        return f'''name: {self.name}, age: {self.age}, breed: {self.breed}, temperament: {self.temperament}, is_cool: {self.is_cool}, owner: [{self.owner}]'''
+    
     # ! CLASS METHODS
     @classmethod
     def test_class_method(cls):
