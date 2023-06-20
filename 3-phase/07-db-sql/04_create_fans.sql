@@ -1,0 +1,3 @@
+-- Create a table of 'fans'
+-- with auto incrementing ids
+-- name of type text
