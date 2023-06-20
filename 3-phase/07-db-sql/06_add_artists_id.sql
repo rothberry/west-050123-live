@@ -1,1 +1,0 @@
---  Add artistID Column to fans table

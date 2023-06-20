@@ -1,1 +1,0 @@
--- Add A new fan of artistId

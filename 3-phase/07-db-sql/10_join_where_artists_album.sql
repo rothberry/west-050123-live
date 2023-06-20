@@ -1,1 +1,0 @@
--- Join the artist with their albums
