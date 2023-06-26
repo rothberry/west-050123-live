@@ -111,3 +111,9 @@ class Owner:
         sql = "DELETE FROM owners WHERE id = ?"
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
+
+    def pets(self):
+        from pet import Pet
+        sql = "SELECT * from pets WHERE pets.owner_id = ?"
+        my_pets = CURSOR.execute(sql, (self.id,)).fetchall()
+        return [Pet.new_instance_from_db(pet) for pet in my_pets]

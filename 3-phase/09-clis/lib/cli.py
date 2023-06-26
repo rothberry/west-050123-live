@@ -25,3 +25,7 @@ if __name__ == "__main__":
     #   Add a new Owner
 
     # ! The CLI file is the main run file
+    # Invoking the functions needed to start the app
+
+        
+    main_menu()
