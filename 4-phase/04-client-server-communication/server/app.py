@@ -25,6 +25,7 @@ from flask_migrate import Migrate
 
 from flask_restful import Api, Resource
 from werkzeug.exceptions import NotFound
+from flask_cors import CORS 
 
 # 5.✅ Import CORS from flask_cors, invoke it and pass it app
 #   5.1Start up the server / client and navigate to client/src/App.js
@@ -32,12 +33,12 @@ from werkzeug.exceptions import NotFound
 from models import db, Production, CrewMember
 
 app = Flask(__name__)
-
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 db.init_app(app)
 
 api = Api(app)
