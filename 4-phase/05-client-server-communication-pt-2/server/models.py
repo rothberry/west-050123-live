@@ -20,16 +20,27 @@ class Production(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+    # Prod has_many cast_members
+    # Parent => Child
+
+    # In the4 Parent
+    # childern = db.rel("ChildTable", backref="parent")
     cast_members = db.relationship(
         "CastMember", backref="production")
 
-    serialize_rules = ("-cast_members.production",'-updated_at', '-created_at')
+    # if you get this Recursion Error:
+    # RecursionError: maximum recursion depth exceeded in comparison
+    # you need to stop the relationship loop from going back into the child
 
-    @validates("image")
-    def validates_image(self, key, image_path):
-        if ".jpg" not in image_path:
-            raise ValueError("Image file must be a .jpg")
-        return image_path
+    # /production returns all the attributes PLUS the production.cast_members,
+    # then the cast_members will also run THEIR RELATIONSHIP of cast_members.production
+    serialize_rules = ('-cast_members.production', '-updated_at', '-created_at')
+
+    # @validates("image")
+    # def validates_image(self, key, image_path):
+    #     if ".jpg" not in image_path:
+    #         raise ValueError("Image file must be a .jpg")
+    #     return image_path
 
     @validates("budget")
     def validates_budget(self, key, budget):
@@ -51,6 +62,12 @@ class CastMember(db.Model, SerializerMixin):
     production_id = db.Column(db.Integer, db.ForeignKey('productions.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    # In the Child class
+    # parent = db.rel("ParentTable", backref="children")
+    # production = db.relationship("Production", backref="cast_members")
+
+    serialize_rules = ("-updated_at", "-created_at")
 
     def __repr__(self):
         return f'<CastMember Name:{self.name}, Role:{self.role}'

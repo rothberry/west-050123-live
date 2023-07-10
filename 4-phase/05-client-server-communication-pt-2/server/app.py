@@ -42,7 +42,7 @@ api = Api(app)
 
 class Productions(Resource):
     def get(self):
-        production_list = [p.to_dict() for p in Production.query.all()]
+        production_list = [p.to_dict(rules=("-cast_members",)) for p in Production.query.all()]
         return make_response(production_list, 200)
 
     def post(self):
