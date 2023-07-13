@@ -1,7 +1,6 @@
 // 📚 Review With Students:
 // Request response cycle
-//Note: This was build using v5 of react-router-dom
-import { Route, Routes, useNavigation } from "react-router-dom"
+import { Route, Routes, useNavigate } from "react-router-dom"
 import { createGlobalStyle } from "styled-components"
 import { useEffect, useState } from "react"
 import Home from "./components/Home"
@@ -12,20 +11,19 @@ import ProductionDetail from "./components/ProductionDetail"
 import NotFound from "./components/NotFound"
 import Authentication from "./components/Authentication"
 
-const BASE_URL = "http://localhost:5000"
-
 function App() {
 	const [productions, setProductions] = useState([])
 	const [productionEdit, setProductionEdit] = useState([])
-	const [user, setUser] = useState(null)
-	const history = useNavigation()
+	const [currentUser, setUser] = useState(null)
+	const history = useNavigate()
 
 	useEffect(() => {
+		fetchUser()
 		fetchProductions()
 	}, [])
 
 	const fetchProductions = () =>
-		fetch(BASE_URL + "/productions")
+		fetch("/productions")
 			.then((res) => res.json())
 			.then(setProductions)
 
@@ -33,6 +31,9 @@ function App() {
 		// 8.✅ Create a GET fetch that goes to '/authorized'
 		// If returned successfully set the user to state and fetch our productions
 		// else set the user in state to Null
+		fetch("/authorized")
+		.then(res => res.json())
+		.then(setUser)
 	}
 
 	const addProduction = (production) =>
@@ -65,6 +66,7 @@ function App() {
 		<>
 			<GlobalStyle />
 			<Navigation setUser={setUser} handleEdit={handleEdit} />
+			<h1>{currentUser ? currentUser.name : "Not Logged In"}</h1>
 			<Routes>
 				<Route
 					path="/productions/new"

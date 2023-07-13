@@ -4,6 +4,8 @@ import styled from "styled-components"
 
 function Authentication({ setUser }) {
 	const [signUp, setSignUp] = useState(false)
+	const [name, setName] = useState("")
+	const [email, setEmail] = useState("")
 	const history = useNavigate()
 
 	const handleClick = () => setSignUp((signUp) => !signUp)
@@ -18,6 +20,25 @@ function Authentication({ setUser }) {
 
 	const handleAuth = (e) => {
 		e.preventDefault()
+		console.log({ name, email })
+		const postReqObj = {
+			method: "POST",
+			headers: {
+				"Content-type": "application/json",
+			},
+			body: JSON.stringify({ name, email }),
+		}
+		fetch(signUp ? "/users" : "/login", postReqObj)
+			.then((res) => res.json())
+			.then((newUser) => {
+				console.log({ newUser })
+				if (!newUser.errors) {
+					setUser(newUser)
+					history("/")
+				} else {
+					console.log(newUser.errors)
+				}
+			})
 	}
 
 	return (
@@ -30,15 +51,20 @@ function Authentication({ setUser }) {
 			</button>
 			<Form onSubmit={handleAuth}>
 				<label>Username</label>
-				<input type="text" name="name" value={"value"} onChange={console.log} />
+				<input
+					type="text"
+					name="name"
+					value={name}
+					onChange={(e) => setName(e.target.value)}
+				/>
 				{signUp && (
 					<>
 						<label>Email</label>
 						<input
-							type="text"
+							type="email"
 							name="email"
-							value={"value"}
-							onChange={console.log}
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
 						/>
 					</>
 				)}

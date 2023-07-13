@@ -17,6 +17,27 @@
 # Running React together 
      # In Terminal cd into the root directory, run:
         # `honcho start -f Procfile.dev`
+
+""" 
+    Both of the Auths
+
+    Authentication:
+    - Validating a user to be who they claim
+    - Ex: Getting your hand stamped at a bar/club
+
+    Session:
+    - Active time while the user is logged into the app
+    - a series of activities that the user does
+    - Potentinally Encrpyted Object that holds data
+
+    Cookie:
+    - Piece of data stored within the browser
+    - Mostly used for (and for this lectures purposes) credentials and keeping a user signed in
+
+
+ """
+from ipdb import set_trace
+from dotenv import dotenv_values
 from flask import Flask, request, make_response, abort, session, jsonify
 from flask_migrate import Migrate
 
@@ -35,8 +56,10 @@ app.json.compact = False
 
 # Set up:
     # generate a secrete key `python -c 'import os; print(os.urandom(16))'`
-
-app.secret_key = 'Secret Key Here!'
+# load_env()
+# ENV = dotenv_values()
+ENV = dotenv_values("../.env")
+app.secret_key = ENV["SECRET_KEY"]
 
 migrate = Migrate(app, db)
 db.init_app(app)
@@ -127,6 +150,15 @@ class ProductionByID(Resource):
         return response
 api.add_resource(ProductionByID, '/productions/<int:id>')
 
+# What are the REST(ish)ful routes for User
+# GET       /users      INDEX
+#   EX: Newsletter app, Social Media
+# GET       /users/:id  SHOW
+# POST      /users      SIGNUP/REGISTER
+# GET       /authorized CURRENT_USER
+# POST      /login      LOGIN
+# DELETE    /logout     LOGOUT
+
 # 1.✅ User
     # A user model was added to "models.py" along with an Authentication component in client/src/components/Authentication.sj
     # 1.1 Create a User POST route by creating a class Users that inherits from Resource
@@ -137,7 +169,21 @@ api.add_resource(ProductionByID, '/productions/<int:id>')
         # 1.3.3 add and commit the new user
         # 1.3.4 Save the new users id to the session hash
         # 1.3.5 Make a response and send it back to the client
+class Users(Resource):
 
+    def post(self):
+        form_json = request.get_json()
+        new_user = User(
+            name=form_json["name"],
+            email=form_json["email"]
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        session["user_id"] = new_user.id
+        return make_response(new_user.to_dict(), 201)
+
+
+api.add_resource(Users, "/users")
 # 2.✅ Test this route in the client/src/components/Authentication.sj 
 
 # 3.✅ Create a Login route
@@ -150,6 +196,17 @@ api.add_resource(ProductionByID, '/productions/<int:id>')
         # 3.3.4 convert the user to_dict and send a response back to the client 
     #3.4 Toggle the signup form to login and test the login route
 
+class Login(Resource):
+
+    def post(self):
+        current_user = User.query.filter_by(name=request.get_json()["name"]).first()
+        if current_user:
+            session["user_id"] = current_user.id
+            return make_response(current_user.to_dict(), 200)
+        else:
+            return make_response({"errors": "Username not found"}, 404)
+
+api.add_resource(Login, "/login")
 
 # 4.✅ Create an AuthorizedSession class that inherits from Resource
     # 4.1 use api.add_resource to add an authorized route
@@ -158,6 +215,18 @@ api.add_resource(ProductionByID, '/productions/<int:id>')
         # 4.2.2 Use the user id to query the user with a .filter
         # 4.2.3 If the user id is in sessions and found make a response to send to the client. else raise the Unauthorized exception (Note- Unauthorized is being imported from werkzeug.exceptions)
 
+class CurrentUser(Resource):
+
+    def get(self):
+        print(session)
+        current_user = User.query.filter_by(id = session.get("user_id")).first()
+
+        if current_user:
+            return make_response(current_user.to_dict(), 200)
+        else:
+            return make_response({"error": "Unauthorized..."}, 401)
+
+api.add_resource(CurrentUser, "/authorized")
 # 5.✅ Head back to client/src/App.js to restrict access to our app!
 
 # 6.✅ Logout 
@@ -165,6 +234,14 @@ api.add_resource(ProductionByID, '/productions/<int:id>')
     # 6.2 Create a method called delete
     # 6.3 Clear the user id in session by setting the key to None
     # 6.4 create a 204 no content response to send back to the client
+
+class Logout(Resource):
+    def delete(self):
+        session["user_id"] = None
+        return make_response({}, 204)
+    
+api.add_resource(Logout, "/logout")
+
 
 # 7.✅ Navigate to client/src/components/Navigation.js to build the logout button!
 
