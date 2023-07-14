@@ -10,6 +10,7 @@ fake = Faker()
 with app.app_context():   
     Production.query.delete()
     CastMember.query.delete()
+    User.query.delete()
 
     productions = []
  
@@ -52,7 +53,7 @@ with app.app_context():
     db.session.add_all(hamilton_cast_members)
     db.session.commit()
 
-    user = User(name='LLC', email='west@flatiron.com')
+    user = User(name='LLC', email='west@flatiron.com', password_hash="123")
     db.session.add(user)
     db.session.commit()
 

@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import { GiHamburgerMenu } from "react-icons/gi"
 
-function Navigation({ setUser }) {
+function Navigation({ setUser, loggedIn }) {
 	const [menu, setMenu] = useState(false)
 	const history = useNavigate()
 
@@ -33,10 +33,13 @@ function Navigation({ setUser }) {
 						<li>
 							<Link to="/"> Home</Link>
 						</li>
-						<li>
-							<Link to="/authentication"> Login/Signup</Link>
-						</li>
-						<li onClick={handleLogout}> Logout </li>
+						{loggedIn ? (
+							<li onClick={handleLogout}> Logout </li>
+						) : (
+							<li>
+								<Link to="/authentication"> Login/Signup</Link>
+							</li>
+						)}
 					</ul>
 				)}
 			</Menu>

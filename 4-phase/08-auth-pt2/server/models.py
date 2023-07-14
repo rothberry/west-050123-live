@@ -7,13 +7,14 @@
 # Rainbow Tables
 # Bcrypt
 
-
+from ipdb import set_trace
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 
 # 3.✅ Import bcrypt from app
+# from app import bcrypt
 
 
 db = SQLAlchemy()
@@ -70,13 +71,43 @@ class User(db.Model, SerializerMixin):
     name = db.Column(db.String)
     email = db.Column(db.String)
     admin = db.Column(db.String, default=False)
+    # # password = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+    """ 
+        How should passwords work?
+
+        If we just saved the passwords as strings inot our database, what are the issues?
+        - if someone can see the db, then they can see all the passwords
+
+        End goal is to never know the users password on the backend
+
+        Hashing: 1 way process
+        - Password + some_secret_key + some algo => new_password
+        - encrypting without a way back
+
+        Salting:
+        - Adding more characters to our password before / during / after hashing
+
+        Encrypting: 2 way process
+        - Password + some_secret_key + some algo => new_password
+        - can Decrypt the password if you know the key and algo
+
+    """
+
+    _password_hash = db.Column(db.String)
+
+    serialize_rules = ("-_password_hash","-admin", "-created_at", "-updated_at")
     # 4.✅ Add a column _password_hash
     #   Note: When an underscore is used, it's a sign that the variable or method is for internal use.
 
     # 5.✅ Create a hybrid_property that will protect the hash from being viewed
+    #   The hybrid_propery will assign all the SQLAlchemy attributes to this getter method
+
+    @hybrid_property
+    def password_hash(self):
+        return self._password_hash
 
     # 6.✅ Navigate to app
 
@@ -84,7 +115,18 @@ class User(db.Model, SerializerMixin):
     #   7.1 Use bcyrpt to generate the password hash with bcrypt.generate_password_hash
     #   7.2 Set the _password_hash to the hashed password
 
+    @password_hash.setter
+    def password_hash(self, password):
+        # the only time where the password will be the actual string
+        from app import bcrypt
+        pw_hash = bcrypt.generate_password_hash(password.encode("utf-8"))
+        self._password_hash = pw_hash.decode("utf-8")
+
     # 8.✅ Create an authenticate method that uses bcyrpt to verify the password against the hash in the DB with bcrypt.check_password_hash
+
+    def authenticate(self, password):
+        from app import bcrypt
+        return bcrypt.check_password_hash(self._password_hash, password.encode("utf-8"))
 
     # 9.✅ Navigate to app
 

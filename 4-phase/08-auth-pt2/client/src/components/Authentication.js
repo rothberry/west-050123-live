@@ -6,21 +6,22 @@ function Authentication({ setUser }) {
 	const [signUp, setSignUp] = useState(false)
 	const [name, setName] = useState("")
 	const [email, setEmail] = useState("")
+	const [password, setPassword] = useState("")
 	const history = useNavigate()
 
 	const handleClick = () => setSignUp((signUp) => !signUp)
 
 	const handleAuth = (e) => {
 		e.preventDefault()
-		console.log({ name, email })
+		console.log({ name, email, password })
 		const postReqObj = {
 			method: "POST",
 			headers: {
 				"Content-type": "application/json",
 			},
-			body: JSON.stringify({ name, email }),
+			body: JSON.stringify({ name, email, password }),
 		}
-		fetch(signUp ? "/users" : "/login", postReqObj)
+		fetch(signUp ? "/signup" : "/login", postReqObj)
 			.then((res) => res.json())
 			.then((newUser) => {
 				console.log({ newUser })
@@ -48,6 +49,14 @@ function Authentication({ setUser }) {
 					name="name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
+				/>
+
+				<label>Password</label>
+				<input
+					type="password"
+					name="password"
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
 				/>
 				{signUp && (
 					<>

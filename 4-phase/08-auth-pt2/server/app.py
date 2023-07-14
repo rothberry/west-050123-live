@@ -34,6 +34,10 @@
     - Piece of data stored within the browser
     - Mostly used for (and for this lectures purposes) credentials and keeping a user signed in
 
+    Authorization:
+    - Level of access that a user can have
+    - Ex: Checking the id, make sure you have access
+    - This is where the passwords come into play
 
  """
 from ipdb import set_trace
@@ -54,6 +58,8 @@ from models import db, Production, CastMember, User
 
 app = Flask(__name__)
 CORS(app)
+bcrypt = Bcrypt(app)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
@@ -177,6 +183,23 @@ api.add_resource(ProductionByID, '/productions/<int:id>')
 #   10.3 Test out your route with the client or Postman
 
 
+class Signup(Resource):
+    def post(self):
+        form_json = request.get_json()
+        try:
+            new_user = User(
+                name=form_json["name"],
+                email=form_json["email"],
+                password_hash=form_json["password"]
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            return make_response(new_user.to_dict(), 201)
+        except:
+            return make_response({"errors": "Bad name / email / password"}, 422)
+
+
+api.add_resource(Signup, "/signup")
 # User.query.order_by(User.id.desc()).first()._password_hash
 
 # 11.✅ Create a Login route
@@ -186,6 +209,20 @@ api.add_resource(ProductionByID, '/productions/<int:id>')
 #       11.2.2 Set the user's id to sessions under the user_id key
 #       11.2.3 Create a response to the client with the user's data
 
+
+class Login(Resource):
+
+    def post(self):
+        try:
+            user = User.query.filter_by(
+                name=request.get_json()["name"]).first()
+            if user.authenticate(request.get_json()["password"]):
+                session["user_id"] = user.id
+                return make_response(user.to_dict())
+        except:
+            return make_response({"errors": "Invalid Username or Password"}, 401)
+
+api.add_resource(Login, "/login")
 # 12 Head to client/components/authenticate
 
 
@@ -195,7 +232,14 @@ api.add_resource(ProductionByID, '/productions/<int:id>')
 #       13.2.1 Check to see if the user_id is in session
 #       13.2.2 If found query the user and send it to the client
 #       13.2.3 If not found return a 401 Unauthorized error
-
+class CurrentUser(Resource):
+    def get(self):
+        try:
+            user = User.query.filter_by(id=session["user_id"]).first()
+            return make_response(user.to_dict())
+        except:
+            return make_response({"errors": "Unauthed"}, 401)
+api.add_resource(CurrentUser, "/authorized")
 
 # 14.✅ Create a Logout route
 #   14.1 Use add_resource to add a logout endpoint
@@ -204,6 +248,13 @@ api.add_resource(ProductionByID, '/productions/<int:id>')
 #       14.2.1 Create a response with no content and a 204
 #   14.3 Test out your route with the client or Postman
 
+class Logout(Resource):
+    
+    def delete(self):
+        session["user_id"] = None
+        return make_response("", 204)
+
+api.add_resource(Logout, "/logout")
 # 14.✅ Navigate to client navigation
 
 @app.errorhandler(NotFound)
