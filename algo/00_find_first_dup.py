@@ -27,9 +27,10 @@ Consider the number of unique elements of nums to be k, to get accepted, you nee
 """
 
 
+
+
 from ipdb import set_trace
 from os import system
-
 def remove_dupilicates(nums):
     # ? First
     # In python
@@ -64,19 +65,19 @@ def remove_dupilicates(nums):
     #         remove either the current idx
     #       if not, continue
     # return the length of the new modified nums list
-    for idx, current in enumerate(nums):
-        # need an index tracker to get the current and the next
-        try: 
-          nxt = nums[idx + 1]
-          if current == nxt:
-              nums.pop(idx)
-              # our index won't increase on pop
-              print(f"New: {nums}")
-        except IndexError:
-            pass
+
+    idx = 0
+    while idx < len(nums) - 1:
+        current = nums[idx]
+        nxt = nums[idx + 1]
+        if current == nxt:
+            nums.pop(idx)
+            # our index won't increase on pop
+            print(f"New: {nums}")
+        else:
+            idx += 1
     print(f'Out: {nums}')
     return len(nums)
-    
 
 
 nums1 = [1, 1, 2]
