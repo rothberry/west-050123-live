@@ -1,7 +1,10 @@
 import styled from "styled-components"
 import ProductionCard from "./ProductionCard"
+import { useContext } from "react"
+import { Context } from "../contexts/Context"
 
-function ProductionContainer({ productions }) {
+function ProductionContainer(/* { productions } */) {
+	const { productions } = useContext(Context)
 	return (
 		<div>
 			<Title>

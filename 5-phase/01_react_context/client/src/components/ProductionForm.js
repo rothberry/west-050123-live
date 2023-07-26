@@ -2,8 +2,11 @@ import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import { useFormik } from "formik"
 import * as yup from "yup"
+import { useContext } from "react"
+import { Context } from "../contexts/Context"
 
-function ProductionForm({ addProduction }) {
+function ProductionForm(/* { addProduction } */) {
+	const { addProduction } = useContext(Context)
 	const history = useNavigate()
 	const formSchema = yup.object().shape({
 		title: yup.string().required("Must enter a title"),

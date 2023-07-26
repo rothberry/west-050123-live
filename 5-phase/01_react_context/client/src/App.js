@@ -1,8 +1,7 @@
 // 📚 Review With Students:
-// Request response cycle
 import { Route, Routes, useNavigate } from "react-router-dom"
 import { createGlobalStyle } from "styled-components"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Home from "./components/Home"
 import ProductionForm from "./components/ProductionForm"
 import ProductionEdit from "./components/ProductionEdit"
@@ -10,11 +9,20 @@ import Navigation from "./components/Navigation"
 import ProductionDetail from "./components/ProductionDetail"
 import NotFound from "./components/NotFound"
 import Authentication from "./components/Authentication"
+import { Context } from "./contexts/Context"
 
 function App() {
-	const [productions, setProductions] = useState([])
-	const [productionEdit, setProductionEdit] = useState([])
-	const [currentUser, setUser] = useState(null)
+	const {
+		productions,
+		setProductions,
+		currentUser,
+		setUser,
+		productionEdit,
+		setProductionEdit,
+	} = useContext(Context)
+	// const [productions, setProductions] = useState([])
+	// const [productionEdit, setProductionEdit] = useState([])
+	// const [currentUser, setUser] = useState(null)
 	const history = useNavigate()
 
 	useEffect(() => {
@@ -37,62 +45,39 @@ function App() {
 			})
 	}
 
-	const addProduction = (production) =>
-		setProductions((current) => [...current, production])
+	// const addProduction = (production) =>
+	// 	setProductions((current) => [...current, production])
 
-	const updateProduction = (updated_production) =>
-		setProductions((productions) =>
-			productions.map((production) =>
-				production.id == updated_production.id ? updated_production : production
-			)
-		)
+	// const updateProduction = (updated_production) =>
+	// 	setProductions((productions) =>
+	// 		productions.map((production) =>
+	// 			production.id == updated_production.id ? updated_production : production
+	// 		)
+	// 	)
 
-	const deleteProduction = (deleted_production) =>
-		setProductions((productions) =>
-			productions.filter(
-				(production) => production.id !== deleted_production.id
-			)
-		)
+	// const deleteProduction = (deleted_production) =>
+	// 	setProductions((productions) =>
+	// 		productions.filter(
+	// 			(production) => production.id !== deleted_production.id
+	// 		)
+	// 	)
 
 	const handleEdit = (production) => {
 		setProductionEdit(production)
 		history.push(`/productions/edit/${production.id}`)
 	}
 
-	// 9.✅ Return a second block of JSX
-	// If the user is not in state return JSX and include <GlobalStyle /> <Navigation/> and  <Authentication setUser={setUser}/>
-	//9.1 Test out our route! Logout and try to visit other pages. Login and try to visit other pages again. Refresh the page and note that you are still logged in!
-
 	if (!!currentUser) {
 		return (
 			<>
 				<GlobalStyle />
-				<Navigation setUser={setUser} handleEdit={handleEdit} loggedIn={!!currentUser}/>
+				<Navigation />
 				<h1>{currentUser ? currentUser.name : "Not Logged In"}</h1>
 				<Routes>
-					<Route
-						path="/productions/new"
-						element={<ProductionForm addProduction={addProduction} />}
-					/>
-					<Route
-						path="/productions/edit/:id"
-						element={
-							<ProductionEdit
-								updateProduction={updateProduction}
-								productionEdit={productionEdit}
-							/>
-						}
-					/>
-					<Route
-						path="/productions/:id"
-						element={
-							<ProductionDetail
-								handleEdit={handleEdit}
-								deleteProduction={deleteProduction}
-							/>
-						}
-					/>
-					<Route exact path="/" element={<Home productions={productions} />} />
+					<Route path="/productions/new" element={<ProductionForm />} />
+					<Route path="/productions/edit/:id" element={<ProductionEdit />} />
+					<Route path="/productions/:id" element={<ProductionDetail />} />
+					<Route exact path="/" element={<Home />} />
 					<Route element={<NotFound />} />
 				</Routes>
 			</>
@@ -101,7 +86,11 @@ function App() {
 		return (
 			<>
 				<GlobalStyle />
-				<Navigation setUser={setUser} handleEdit={handleEdit} loggedIn={!!currentUser}/>
+				<Navigation
+					setUser={setUser}
+					handleEdit={handleEdit}
+					loggedIn={!!currentUser}
+				/>
 				<Routes>
 					<Route
 						exact

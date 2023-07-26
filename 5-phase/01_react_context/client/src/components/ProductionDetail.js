@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
+import { Context } from "../contexts/Context"
 
-function ProductionDetail({ handleEdit, deleteProduction }) {
+function ProductionDetail(/* { handleEdit, deleteProduction } */) {
+	const { handleEdit, deleteProduction } = useContext(Context)
 	const [production, setProduction] = useState({ cast_members: [] })
 	const [error, setError] = useState(null)
 	//Student Challenge: GET One

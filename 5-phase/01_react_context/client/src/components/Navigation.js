@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import { GiHamburgerMenu } from "react-icons/gi"
+import { Context } from "../contexts/Context"
 
-function Navigation({ setUser, loggedIn }) {
+function Navigation(/* { setUser, loggedIn } */) {
+
+	const { setUser, currentUser } = useContext(Context)
 	const [menu, setMenu] = useState(false)
 	const history = useNavigate()
 
@@ -33,7 +36,7 @@ function Navigation({ setUser, loggedIn }) {
 						<li>
 							<Link to="/"> Home</Link>
 						</li>
-						{loggedIn ? (
+						{!!currentUser ? (
 							<li onClick={handleLogout}> Logout </li>
 						) : (
 							<li>
