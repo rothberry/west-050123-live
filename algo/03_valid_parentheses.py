@@ -9,6 +9,7 @@ An input string is valid if:
 
 """
 
+from helper import Helper
 
 def is_valid(s):
     # ? First
@@ -43,10 +44,11 @@ def is_valid(s):
         print(stack)
     return len(stack) == 0
 
+Helper.top_wrap("is_valid")
 
 print(is_valid("("))
 print(is_valid("()"))
 print(is_valid("(]"))
 print(is_valid("({})"))
-print(is_valid("({(((((((((((((((((((((((((())))))))))))))))))))))))))})"))
+# print(is_valid("({(((((((((((((((((((((((((())))))))))))))))))))))))))})"))
 print(is_valid("({])"))
