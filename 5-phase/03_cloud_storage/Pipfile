@@ -9,6 +9,8 @@ flask-cors = "*"
 flask-migrate = "*"
 python-dotenv = "*"
 flask-sqlalchemy = "*"
+cloudinary = "*"
+ipdb = "*"
 
 [dev-packages]
 

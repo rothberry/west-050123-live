@@ -1,12 +1,11 @@
 from ipdb import set_trace
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy_serializer import SerializerMixin
 
 
 db = SQLAlchemy()
 
 
-class Picture(db.Model. db.SerializerMixin):
+class Picture(db.Model):
     __tablename__ = "pictures"
 
     id = db.Column(db.Integer, primary_key=True)
