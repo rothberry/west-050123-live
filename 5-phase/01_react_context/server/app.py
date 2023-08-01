@@ -257,6 +257,14 @@ class Logout(Resource):
 api.add_resource(Logout, "/logout")
 # 14.✅ Navigate to client navigation
 
+
+@app.route("/search", methods=["POST"])
+def search():
+    form_json = request.get_json()
+    result = Api.search_for_artist(form_json["artist_name"])
+
+
+
 @app.errorhandler(NotFound)
 def handle_not_found(e):
     response = make_response(
