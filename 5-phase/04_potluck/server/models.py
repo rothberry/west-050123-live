@@ -19,7 +19,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 db = SQLAlchemy()
 
- 
+
 class Production(db.Model, SerializerMixin):
     __tablename__ = 'productions'
 
